@@ -6,7 +6,7 @@ const sellerSchema=new mongoose.Schema({
     role:String,
     address:String,
     city:String,
-    district:String,
+    state:String,
     pincode:String,
     phoneNo:String,
     // shopPhoto:{
