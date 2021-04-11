@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const sellerSchema=new mongoose.Schema({
     userName:String,
-    emailId: String,
+    email: String,
     password: String,
     role:String,
     address:String,

@@ -1,8 +1,8 @@
 const mongoose=require("mongoose");
 const cateringServiceSchema=new mongoose.Schema({
-    packageName:String,
+    title:String,
     description:String,
-    pricePerPlate:String,
+    price:String,
  //    photos:{
  //        type:Array,
  //        default:[]

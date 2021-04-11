@@ -1,7 +1,8 @@
 const express=require("express");
 const router=express.Router();
 const admin=require("../firebase/index.js");
-const userCollection =require("../models/user.js");
+const buyerCollection=require("../models/buyerCollection.js");
+const sellerCollection=require("../models/sellerCollection.js");
 const authCheck=(req,res,next)=>
 {
      console.log(req.headers.authtoken);
@@ -15,23 +16,39 @@ const authCheck=(req,res,next)=>
        res.send("404");
      });
 }
-const createOrUpdateUser=(req,res,next)=>
+const createBuyer=(req,res,next)=>
 {
   console.log("reached createorupdateuser");
-  const {name,email,picture}=req.user;
-  userCollection.findOneAndUpdate({email},{name,picture},{new:true})
+  const user=req.body;
+  buyerCollection.findOne({email:user.email})
+  .then((userInDb)=>{
+   if(userInDb){res.send("user already exists");}
+   else
+   { const newUser= new buyerCollection(req.body);
+     newUser.save();}
+     res.send("get done");
+   })
+   .catch((error)=>{console.log(error.message);});
+}
+
+const updateBuyer=(req,res,next)=>
+{
+
+}
+
+const createProfessional=(req,res,next)=>
+{
+  console.log("reached createorupdateuser");
+  const user=req.body;
+  sellerCollection.findOne({email:user.email})
   .then((userInDb)=>{
    if(userInDb)
    {
-     res.json(userInDb);
+     res.send("user already exists");
    }
    else
    {
-      const newUser= new userCollection({
-           email,
-           name,
-           picture
-      });
+      const newUser= new sellerCollection(req.body);
       newUser.save();  
    }
    res.send("get done");
@@ -41,17 +58,36 @@ const createOrUpdateUser=(req,res,next)=>
       console.log(error.message);
    });
 }
-const currentUser=(req,res,next)=>
+
+const updateProfessional=(req,res,next)=>
 {
-    userCollection.findOne({email:req.user.email})
-    .then((userInDb)=>{
+     
+}
+
+const readUser=(req,res,next)=>
+{
+     buyerCollection.findOne({email:req.user.email})
+     .then((userInDb)=>{
          if(userInDb)
          res.json(userInDb);
-         else res.json(null); 
+         else {
+            sellerCollection.findOne({email:req.user.email})
+           .then((userInDb)=>{
+              if(userInDb)
+              res.json(userInDb);
+              else {res.send("please register first")} 
+            })
+            .catch((error)=>{console.log(error)});
+          } 
     })
     .catch((error)=>{console.log(error)});
 };
-router.post("/create-or-update-user",authCheck,createOrUpdateUser);
 
-router.post("/current-user",authCheck,currentUser);
+
+
+router.post("/create-buyer",authCheck,createBuyer);
+router.post("/create-professional",authCheck,createProfessional);
+router.post("/update-buyer",authCheck,updateBuyer);
+router.post("/update-professional",authCheck,updateProfessional);
+router.post("/read-user",authCheck,readUser);
 module.exports=router;

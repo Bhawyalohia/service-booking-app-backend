@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 const djServiceSchema=new mongoose.Schema({
-    packageName:String,
+    title:String,
     description:String,
     price:String,
  //    photos:{

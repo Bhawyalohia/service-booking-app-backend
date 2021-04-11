@@ -1,8 +1,8 @@
 const mongoose=require("mongoose");
 const hallServiceSchema=new mongoose.Schema({
-   Title:String,
+   title:String,
    description:String,
-   pricePerDay:String,
+   price:String,
 //    photos:{
 //        type:Array,
 //        default:[]

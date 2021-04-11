@@ -5,6 +5,10 @@ require("dotenv").config();
 const cors=require("cors");
 const mongoose=require("mongoose");
 const authRouter=require("./routes/auth.js");
+const professionalRouter=require("./routes/professional.js");
+
+
+
 const app=express();
 
 
@@ -29,6 +33,7 @@ app.use(cors());
 
 
 app.use("/api",authRouter);
+app.use("/professional",professionalRouter);
 const port=process.env.PORT||8000;
 
 
