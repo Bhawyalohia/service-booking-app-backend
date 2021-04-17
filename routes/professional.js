@@ -39,19 +39,20 @@ const createProduct=(req,res,next)=>
 {
     const currentUser=req.user;
     const product=req.body;
+    product.by=currentUser._id;
     if(currentUser.role=="Banquet Hall")
     {
-         const newProduct= new hallServiceCollection(req.body);
+         const newProduct= new hallServiceCollection(product);
          newProduct.save();
     }
     else if(currentUser.role=="Caterer")
     {
-     const newProduct= new cateringServiceCollection(req.body);
+     const newProduct= new cateringServiceCollection(product);
      newProduct.save();
     }
     else if(currentUser.role=="Dj")
     {
-     const newProduct= new djServiceCollection(req.body);
+     const newProduct= new djServiceCollection(product);
      newProduct.save();
     }
      res.send("added successfully");
@@ -60,17 +61,65 @@ const updateProduct=(req,res,next)=>
 {
     
 }
-const deleteProduct=(req,res,next)=>
+const deleteProduct=async (req,res,next)=>
 {
-   
+try
+{
+   let deletedService;
+   const currentUser=req.user;
+   const service=req.body;
+   if(currentUser.role=="Banquet Hall")
+   {
+     deletedService=await hallServiceCollection.deleteOne({_id:service._id});
+   }
+   else if(currentUser.role=="Caterer")
+   {
+     deletedService=await cateringServiceCollection.deleteOne({_id:service._id});
+   }
+   else if(currentUser.role=="Dj")
+   {
+     deletedService=await djServiceCollection.deleteOne({_id:service._id});
+   }
+   res.json(deletedService);
 }
-const readProducts=(req,res,next)=>
+catch(error)
 {
+     console.log(error);
+     res.send("cannot read products");
+}
 
+}
+const readProducts=async (req,res,next)=>
+{
+try
+{
+   let services=[];
+   const currentUser=req.user;
+   if(currentUser.role=="Banquet Hall")
+   {
+       services=await hallServiceCollection.find({by:currentUser._id});
+   }
+   else if(currentUser.role=="Caterer")
+   {
+     services=await cateringServiceCollection.find({by:currentUser._id});
+   }
+   else if(currentUser.role=="Dj")
+   {
+     services=await djServiceCollection.find({by:currentUser._id});
+   }
+   res.json(services);
+}
+catch(error)
+{
+     console.log(error);
+     res.send("cannot read products");
+}
 }
 
 
 
 router.post("/createproduct",authCheck,checkProfessional,createProduct);
+router.post("/ownedproducts",authCheck,checkProfessional,readProducts);
+router.post("/deleteproduct",authCheck,checkProfessional,deleteProduct);
 
 module.exports=router;

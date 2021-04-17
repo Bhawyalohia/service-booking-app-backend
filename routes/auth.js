@@ -25,8 +25,10 @@ const createBuyer=(req,res,next)=>
    if(userInDb){res.send("user already exists");}
    else
    { const newUser= new buyerCollection(req.body);
-     newUser.save();}
-     res.send("get done");
+     newUser.save()
+     .then((savedUser)=>{res.json(savedUser)})
+     .catch((err)=>{console.log(error)})
+    }
    })
    .catch((error)=>{console.log(error.message);});
 }
@@ -69,15 +71,17 @@ const readUser=(req,res,next)=>
      buyerCollection.findOne({email:req.user.email})
      .then((userInDb)=>{
          if(userInDb)
-         res.json(userInDb);
+         {
+          res.json(userInDb);
+         }
          else {
             sellerCollection.findOne({email:req.user.email})
-           .then((userInDb)=>{
-              if(userInDb)
-              res.json(userInDb);
-              else {res.send("please register first")} 
-            })
-            .catch((error)=>{console.log(error)});
+             .then((userInDb)=>{
+                if(userInDb)
+                res.json(userInDb);
+                else {res.send("please register first")} 
+              })
+              .catch((error)=>{console.log(error)});
           } 
     })
     .catch((error)=>{console.log(error)});

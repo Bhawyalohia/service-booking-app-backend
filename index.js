@@ -6,8 +6,8 @@ const cors=require("cors");
 const mongoose=require("mongoose");
 const authRouter=require("./routes/auth.js");
 const professionalRouter=require("./routes/professional.js");
-
-
+const servicesRouter=require("./routes/services.js");
+const buyerRouter=require("./routes/buyer.js");
 
 const app=express();
 
@@ -34,6 +34,10 @@ app.use(cors());
 
 app.use("/api",authRouter);
 app.use("/professional",professionalRouter);
+app.use("/services",servicesRouter);
+app.use("/buyer",buyerRouter);
+
+
 const port=process.env.PORT||8000;
 
 

@@ -9,9 +9,7 @@ const sellerSchema=new mongoose.Schema({
     state:String,
     pincode:String,
     phoneNo:String,
-    // shopPhoto:{
-    //     type:Array,
-    // }
+   
 });
 const sellerCollection=new mongoose.model("Seller",sellerSchema);
 module.exports = sellerCollection;

@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+const {ObjectId}=mongoose.Schema.Types; 
 const buyerSchema=new mongoose.Schema({
    userName:String,
    email: String,
@@ -7,9 +8,10 @@ const buyerSchema=new mongoose.Schema({
        type:String,
        default:"buyer"
    },
-//    cart:{
-      
-//    }
+   cart:{ 
+       type:[{type: ObjectId}],
+       default:[]
+    },   
 });
 const buyerCollection=new mongoose.model("Buyer",buyerSchema);
 module.exports = buyerCollection;
