@@ -57,9 +57,40 @@ const createProduct=(req,res,next)=>
     }
      res.send("added successfully");
 }
-const updateProduct=(req,res,next)=>
+const updateProduct= async(req,res,next)=>
 {
-    
+     try
+     {  let serviceDocument=null;
+        const currentUser=req.user;
+        const service=req.body;
+        if(currentUser.role=="Banquet Hall")
+        {
+          serviceDocument=await hallServiceCollection.findOne({_id:service._id});
+        }
+        else if(currentUser.role=="Caterer")
+        {
+          serviceDocument=await cateringServiceCollection.findOne({_id:service._id});
+        }
+        else if(currentUser.role=="Dj")
+        {
+          serviceDocument=await djServiceCollection.findOne({_id:service._id});
+        }
+        let updatedService=null;
+        if(serviceDocument)
+        {
+            serviceDocument.title=service.title;
+            serviceDocument.description=service.description;
+            serviceDocument.price=service.price;
+            updatedService= await serviceDocument.save();
+        }
+        else throw new Error("inconsistency!!");
+        res.json(updatedService);
+     }
+     catch(error)
+     {
+          console.log(error);
+          res.send("cannot read products");
+     }
 }
 const deleteProduct=async (req,res,next)=>
 {
@@ -121,5 +152,8 @@ catch(error)
 router.post("/createproduct",authCheck,checkProfessional,createProduct);
 router.post("/ownedproducts",authCheck,checkProfessional,readProducts);
 router.post("/deleteproduct",authCheck,checkProfessional,deleteProduct);
+router.post("/updateproduct",authCheck,checkProfessional,updateProduct);
+
+
 
 module.exports=router;

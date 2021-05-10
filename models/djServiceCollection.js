@@ -12,7 +12,6 @@ const djServiceSchema=new mongoose.Schema({
        type:ObjectId,
        ref:'Seller'
     }
- 
 });
 const djServiceCollection=new mongoose.model("Djservice",djServiceSchema);
 module.exports = djServiceCollection;
