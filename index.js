@@ -8,10 +8,9 @@ const authRouter=require("./routes/auth.js");
 const professionalRouter=require("./routes/professional.js");
 const servicesRouter=require("./routes/services.js");
 const buyerRouter=require("./routes/buyer.js");
-
+const ordersRouter=require("./routes/orders.js");
+const paymentRouter=require("./routes/stripe.js");
 const app=express();
-
-
 
 mongoose.connect(process.env.DATABASE,{
    useNewUrlParser: true,
@@ -28,7 +27,7 @@ mongoose.connect(process.env.DATABASE,{
 })
 
 app.use(morgan("dev"));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:'50mb'}));
 app.use(cors());
 
 
@@ -36,8 +35,8 @@ app.use("/api",authRouter);
 app.use("/professional",professionalRouter);
 app.use("/services",servicesRouter);
 app.use("/buyer",buyerRouter);
-
-
+app.use("/orders",ordersRouter);
+app.use("/payment",paymentRouter);
 const port=process.env.PORT||8000;
 
 

@@ -11,6 +11,22 @@ const hallServiceSchema=new mongoose.Schema({
    by:{
       type:ObjectId,
       ref:'Seller'
+   },
+   images:{
+      type:[{
+          Key:String,
+          Location:String,
+          Bucket:String
+      }],
+      default:[]   
+   },
+   reviews:{
+      type:[{
+        _id:ObjectId,
+        review:String,
+        by:ObjectId   
+      }],
+      default:[]
    }
 });
 const hallServiceCollection=new mongoose.model("Hallservice",hallServiceSchema);

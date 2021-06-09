@@ -11,7 +11,23 @@ const cateringServiceSchema=new mongoose.Schema({
     by:{
        type:ObjectId,
        ref:'Seller'
-    }
+    },
+    images:{
+       type:[{
+           Key:String,
+           Location:String,
+           Bucket:String
+       }],
+       default:[]   
+    },
+    reviews:{
+        type:[{
+          _id:ObjectId,
+          review:String,
+          by:ObjectId   
+        }],
+        default:[]
+     }
 });
 const cateringServiceCollection=new mongoose.model("Cateringservice",cateringServiceSchema);
 module.exports = cateringServiceCollection;
