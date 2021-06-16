@@ -10,7 +10,20 @@ const orderSchema=new mongoose.Schema({
    date:Date,
    ownerId:ObjectId,
    orderStatus:String,
-   timerStartTime:Date
+   timeOfAcceptance:{
+      hh:String,
+      mm:String,
+      ss:String
+   },
+   clientSecret:{
+      type:String,
+      default:""
+   },
+   timeOfPayment:{
+      hh:String,
+      mm:String,
+      ss:String
+   }
 });
 const orderCollection=new mongoose.model("Order",orderSchema);
 module.exports = orderCollection;

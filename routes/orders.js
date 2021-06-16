@@ -93,15 +93,36 @@ const createOrder=(req,res,next)=>
      const newOrder=new orderCollection({...order,userId:user._id,orderStatus:"IN_QUEUE",ownerId:service.by._id,service:service});
      newOrder.save().then((savedOrder)=>{res.json(savedOrder)}).catch((err)=>{console.log(err)});
 }
+const readOrder= async (req,res,next)=>
+{
+try{
+
+  const {orderId}= req.body;
+  const order= await orderCollection.find({_id:orderId});
+  if(order.orderStatus==="ACCEPTED_BY_SELLER")
+  {
+      
+  }
+  else res.json(order.orderStatus);
+}
+catch(error)
+{
+     console.log(error);
+}
+}
 const updateOrderStatus=async (req,res,next)=>
 {
    try{
          const {orderId,orderStatus}=req.body;
          const user=req.user;
+         let timeOfAcceptance=null;
+         if(req.body.timeOfAcceptance)
+         timeOfAcceptance=req.body.timeOfAcceptance;
          let orderInDb=await orderCollection.findOne({_id:orderId});
          console.log(orderInDb);
          console.log(user._id);
          orderInDb.orderStatus=orderStatus;
+         orderInDb.timeOfAcceptance=timeOfAcceptance;
          let newOrder = await orderInDb.save();
          res.json(newOrder);
      //     if(orderInDb&&((orderInDb.userId==user._id)||(orderInDb.ownerId==user._id))){ } 
@@ -112,19 +133,28 @@ const updateOrderStatus=async (req,res,next)=>
 const readOrders=(req,res,next)=>
 {
      const user=req.user;
-     if(user.role==="seller")
-     {
-         orderCollection.find({ownerId:user._id})
-         .then((orders)=>{res.json(orders)})
-         .catch((error)=>{console.log(error)});
-     }
-     else if(user.role==="buyer")
+     if(user.role==="buyer")
      {
           orderCollection.find({userId:user._id})
-          .then((orders)=>{res.json(orders)})
+          .then((orders)=>{
+            
+            //check for accepted by seller.
+
+            res.json(orders);
+          })
           .catch((error)=>{console.log(error)});
      }
-     else res.json("user not found as buyer or seller");
+     else{  
+        
+           orderCollection.find({ownerId:user._id})
+           .then((orders)=>{
+
+                //check for accepted by seller.
+
+                res.json(orders)
+            })
+           .catch((error)=>{console.log(error)});
+     }
 }
 const deleteOrder=(req,res,next)=>
 {

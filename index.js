@@ -10,6 +10,7 @@ const servicesRouter=require("./routes/services.js");
 const buyerRouter=require("./routes/buyer.js");
 const ordersRouter=require("./routes/orders.js");
 const paymentRouter=require("./routes/stripe.js");
+const webHookRouter=require("./routes/stripeWebHook");
 const app=express();
 
 mongoose.connect(process.env.DATABASE,{
@@ -37,7 +38,8 @@ app.use("/services",servicesRouter);
 app.use("/buyer",buyerRouter);
 app.use("/orders",ordersRouter);
 app.use("/payment",paymentRouter);
-const port=process.env.PORT||8000;
+app.use("/",webHookRouter);
+const port=process.env.PORT||4242;
 
 
 
