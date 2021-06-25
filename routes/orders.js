@@ -93,23 +93,6 @@ const createOrder=(req,res,next)=>
      const newOrder=new orderCollection({...order,userId:user._id,orderStatus:"IN_QUEUE",ownerId:service.by._id,service:service});
      newOrder.save().then((savedOrder)=>{res.json(savedOrder)}).catch((err)=>{console.log(err)});
 }
-const readOrder= async (req,res,next)=>
-{
-try{
-
-  const {orderId}= req.body;
-  const order= await orderCollection.find({_id:orderId});
-  if(order.orderStatus==="ACCEPTED_BY_SELLER")
-  {
-      
-  }
-  else res.json(order.orderStatus);
-}
-catch(error)
-{
-     console.log(error);
-}
-}
 const updateOrderStatus=async (req,res,next)=>
 {
    try{
@@ -137,9 +120,7 @@ const readOrders=(req,res,next)=>
      {
           orderCollection.find({userId:user._id})
           .then((orders)=>{
-            
             //check for accepted by seller.
-
             res.json(orders);
           })
           .catch((error)=>{console.log(error)});
@@ -148,9 +129,7 @@ const readOrders=(req,res,next)=>
         
            orderCollection.find({ownerId:user._id})
            .then((orders)=>{
-
                 //check for accepted by seller.
-
                 res.json(orders)
             })
            .catch((error)=>{console.log(error)});

@@ -15,7 +15,7 @@ const orderSchema=new mongoose.Schema({
       mm:String,
       ss:String
    },
-   clientSecret:{
+   paymentIntentId:{
       type:String,
       default:""
    },
@@ -23,6 +23,11 @@ const orderSchema=new mongoose.Schema({
       hh:String,
       mm:String,
       ss:String
+   },
+   paymentDone:
+   {
+      type:Boolean,
+      default:false
    }
 });
 const orderCollection=new mongoose.model("Order",orderSchema);

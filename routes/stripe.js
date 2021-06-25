@@ -26,7 +26,7 @@ const createPaymentIntent = async (req,res,next)=>
         }
     )
      const order= await orderCollection.findOne({_id:req.body.orderId});
-     order.clientSecret=paymentIntent.client_secret;
+     order.paymentIntentId=paymentIntent.id;
      order.save().catch((err)=>{console.log(err)})
     res.send({clientSecret:paymentIntent.client_secret})
     }
@@ -35,6 +35,28 @@ const createPaymentIntent = async (req,res,next)=>
         console.log(error);
     }
 }
-
+const readOrderOnTimeout= async (req,res,next)=>
+{
+try{
+        const {orderId}= req.body;
+        let order=await orderCollection.findOne({_id:orderId});
+        let neworder=order;
+        if(order.orderStatus==="ACCEPTED_BY_SELLER")
+        {
+          const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentIntentId);
+          if(paymentIntent&&paymentIntent.status==="succeeded")
+           paymentDone=true;
+          else paymentDone=false;
+          order.orderStatus="TIMEOUT";
+        }
+        console.log(neworder);
+        res.json(neworder);
+}
+catch(error)
+{
+     console.log(error);
+}
+}
 router.post("/create-payment-intent",authCheck,createPaymentIntent);
+router.post("/check-payment-status-on-timeout",readOrderOnTimeout);
 module.exports=router;

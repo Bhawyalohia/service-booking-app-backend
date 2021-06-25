@@ -12,17 +12,18 @@ const withinTime=(timeOfAcceptance,timeOfPayment,range)=>
    return true;
    return false;
 }
-const addToDatabase= async (clientSecret)=>
+const addToDatabase= async (paymentIntentId)=>
 {
-  const order= await orderCollection.findOne({clientSecret:clientSecret});
+  const order= await orderCollection.findOne({paymentIntentId:paymentIntentId});
   const date=new Date();
   const currentTime={hh:date.getHours(), mm:date.getMinutes(), ss:date.getSeconds()};
-  if(withinTime(order.timeOfAcceptance,currentTime,10))
+  if(withinTime(order.timeOfAcceptance,currentTime,10)&&(order.orderStatus!=="REJECTED_BY_BUYER"||order.orderStatus!=="REJECTED_BY_SELLER"))
   {
      order.orderStatus="CONFIRMED";
   }
   else order.orderStatus="TIME_OUT";
   order.timeOfPayment=currentTime;
+  order.paymentDone=true;
   order.save();
   return order;
 }
@@ -34,7 +35,7 @@ const handleEvents= async (req,res,next)=>
             case 'payment_intent.succeeded':
             const paymentIntent = event.data.object;
             console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-            addToDatabase(paymentIntent.client_secret);
+            addToDatabase(paymentIntent.id);
             break;
             default:
             console.log(`Unhandled event type ${event.type}.`);
