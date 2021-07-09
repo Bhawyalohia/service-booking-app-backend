@@ -32,13 +32,13 @@ app.use(bodyParser.json({limit:'50mb'}));
 app.use(cors());
 
 
-app.use("/api",authRouter);
-app.use("/api/professional",professionalRouter);
-app.use("/api/services",servicesRouter);
-app.use("/api/buyer",buyerRouter);
-app.use("/api/orders",ordersRouter);
-app.use("/api/payment",paymentRouter);
-app.use("/api/",webHookRouter);
+app.use("/",authRouter);
+app.use("/professional",professionalRouter);
+app.use("/services",servicesRouter);
+app.use("/buyer",buyerRouter);
+app.use("/orders",ordersRouter);
+app.use("/payment",paymentRouter);
+app.use("/",webHookRouter);
 const port=process.env.PORT||8000;
 
 
